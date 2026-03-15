@@ -3,6 +3,12 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# data files
+data/processed/
+data/raw/
+models/*.pkl
+venv/
+
 # C extensions
 *.so
 
