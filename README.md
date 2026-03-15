@@ -13,7 +13,7 @@ Unlike traditional signature based firewalls, TITAN utilizes the **NSL-KDD datas
 
 **Q: How is it any different from a traditional firewall?**
 
-* Traditional firewalls inspect incoming traffic with a **Rule based** logic: "If IP = X.X.X.X" then Block" or  "If Port = 443 then Allow." TITAN is a trained AI model that detects based on overall pattern and behaviour of the traffic flow over a certain timeframe.
+* Traditional firewalls inspect incoming traffic with a **Rule based** logic: "If IP = X.X.X.X then Block" or  "If Port = 443 then Allow." TITAN is a trained AI model that detects based on overall pattern and behaviour of the traffic flow over a certain timeframe.
 
 **Q: What is the advantage of using AI for security?**
 
