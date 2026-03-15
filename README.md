@@ -24,6 +24,6 @@ Unlike traditional signature based firewalls, TITAN utilizes the **NSL-KDD datas
 * No, **ABSOLUTELY NOT.** From a security standpoint, TITAN is a companion tool to your firewall. The firewall blocks the obvious "known-bad" traffic at high speed, while TITAN performs deep behavioral analysis on the traffic that is allowed through, looking for sophisticated or stealthy intrusions.
 
 ## Project Goals
-* **High-Fidelity Detection:** Achieving 95%+ accuracy in classifying DoS, Probe, R2L, and U2R attacks.
+* **High Accuracy Detection:** Achieving 95%+ accuracy in classifying DoS, Probe, R2L, and U2R attacks.
 * **Explainable AI (XAI):** Utilizing feature importance to explain *why* a specific packet was flagged.
 * **Scalable Pipeline:** A reproducible data engineering workflow from raw PCAP/CSV to model inference.
