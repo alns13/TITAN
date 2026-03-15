@@ -25,11 +25,11 @@ def run_eda():
     print("TITAN: Loading dataset")
     df = pd.read_csv(data_path, names=columns)
 
-    # 3. Simplify Labels: "normal" vs "malicious"
-    # We create a new column called 'binary_target'
+    # simplify Labels: "normal" vs "malicious"
+    # create a new column called 'binary_target'
     df['binary_target'] = df['attack_type'].apply(lambda x: 'normal' if x == 'normal' else 'malicious')
 
-    # 4. Visualization
+    # visualization
     plt.figure(figsize=(10, 6))
     sns.countplot(x='binary_target', data=df, palette='viridis')
     plt.title('TITAN: Normal vs. Malicious Traffic Distribution')
@@ -39,7 +39,7 @@ def run_eda():
     print(f" Saving distribution chart to: {output_path}")
     plt.savefig(output_path)
     
-    # Print the raw numbers for the README
+    # print the raw numbers for the README
     print("\n--- Raw Stats ---")
     print(df['binary_target'].value_counts())
 
