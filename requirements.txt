@@ -1,0 +1,6 @@
+pandas          # Data manipulation and CSV loading
+numpy           # Numerical operations
+matplotlib      # Basic plotting and visualization
+seaborn         # Advanced statistical visualizations (for the EDA)
+scikit-learn    # The core ML library for scaling, encoding, and Random Forest
+joblib          # For saving/loading your trained model "brain"
