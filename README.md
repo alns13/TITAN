@@ -1,4 +1,4 @@
-# TITAN : Threat Inspection Targeted Agent Network
+# TITAN : Traffic Inspection & Threat Analysis Network
 
 
 **TITAN** is an AI-powered Intrusion Detection System (IDS) designed to identify network anomalies using supervised machine learning. 
