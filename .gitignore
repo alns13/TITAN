@@ -6,7 +6,6 @@ __pycache__/
 # data files
 data/processed/
 data/raw/
-models/*.pkl
 venv/
 
 # C extensions
