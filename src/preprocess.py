@@ -1,5 +1,6 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import StandardScaler
+import joblib
 import os
 
 # Paths
@@ -39,6 +40,7 @@ def preprocess_data():
     scaler = StandardScaler()
     feature_cols = df.columns.drop('target')
     df[feature_cols] = scaler.fit_transform(df[feature_cols])
+    joblib.dump(scaler, '../models/data_scaler.pkl')
 
     #Save the cleaned data
     df.to_csv(processed_data_path, index=False)
