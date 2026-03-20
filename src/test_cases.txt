@@ -1,0 +1,21 @@
+try out the model by copy+pasting the following lines directly into the terminal:
+
+1. This one represents a classic DoS attack where a botnet tries to open thousands of connections but never finishes the handshake.
+
+    python src/inference.py '{"protocol_type": "tcp", "service": "private", "flag": "S0", "count": 255, "serror_rate": 1.0, "dst_host_serror_rate": 1.0}'
+
+2. This one's an ICMP amplification attack. The attacker sends a tiny request that results in a massive response, clogging the pipes.
+
+    python src/inference.py '{"protocol_type": "icmp", "service": "ecr_i", "flag": "SF", "src_bytes": 1032, "count": 511, "srv_count": 511, "same_srv_rate": 1.0}'
+
+3. This mimics a standard user visiting a website. It uses HTTP, completes the connection (SF), and has a healthy exchange of bytes.
+
+    python src/inference.py '{"protocol_type": "tcp", "service": "http", "flag": "SF", "src_bytes": 240, "dst_bytes": 4900, "logged_in": 1, "count": 1, "srv_count": 1}'
+
+4. This mimics someone "knocking on the doors" of your server to see what’s open. It doesn't send data; it just checks ports.
+
+    python src/inference.py '{"protocol_type": "tcp", "service": "private", "flag": "REJ", "src_bytes": 0, "dst_bytes": 0, "count": 229, "dst_host_diff_srv_rate": 1.0}'
+
+5. What happens if you send an empty packet? This tests how TITAN handles missing data (it should default everything to 0).
+
+    python src/inference.py '{}'
