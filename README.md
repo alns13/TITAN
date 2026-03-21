@@ -3,13 +3,16 @@
 
 **TITAN** is an AI-powered Intrusion Detection System (IDS) designed to identify network anomalies using supervised machine learning. 
 
-Unlike traditional signature based firewalls, TITAN utilizes the **NSL-KDD dataset** to train a behavioral model capable of detecting Zero-Day attacks and subtle malicious patterns that deviate from established network baselines.
+Unlike traditional signature based firewalls, TITAN utilizes the **NSL-KDD dataset** to train a behavioral model capable of detecting Zero-Day attacks and subtle malicious patterns that deviate from established network patterns.
 
 **FAQ:**
 
 **Q: How does TITAN work?**
 
-* TITAN operates as a Network-based Intrusion Detection System (NIDS). It sits between your device and router analyzing packet          metadata during packet transitions, such as duration, protocol type, and byte counts to determine if a connection is safe or             malicious. It acts as a secondary layer of "behavioral defense" behind your primary firewall.
+* TITAN operates as a Network-based Intrusion Detection System (NIDS). It sits next to your router and uses port mirroring to get a copy of the packets entering and leaving your network, monitoring the traffic like a securirty camera. It analyzes the traffic and sends alerts whenever malicious traffic is detected. 
+
+**Q: How does TITAN determine what is normal vs malicious?**
+* TITAN reads metadata during packet transitions, such as duration, protocol type, and byte counts to determine if a connection is safe or malicious. For more detailed information, go to Data/feature_dict.md to see all the features TITAN uses to make a decision.
 
 **Q: How is it any different from a traditional firewall?**
 
