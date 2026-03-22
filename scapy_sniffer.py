@@ -13,19 +13,29 @@ port_to_feat = {
     21 : "ftp",
     25 : "smtp",
     53 : "domain_u",
-    23 : "telnet"
+    23 : "telnet",
+    110: "pop_3",
+    109 : "pop_2",
+    143 : "imap4",
+    119 : "nntp",
+    3306 : "mysql",
+    6667 : "IRC"
 }
 
 packet_history = deque()
-TIME_WINDOW = 2.0
+TIME_WINDOW = 10.0
 
 #translate scapy TCP flags into KDD dataset flags
 def get_tcp_flag(tcp_layer):
-    flags = tcp_layer.flags
+    flags = str(tcp_layer.flags)
+    if flags == "":
+        return "OTH"
+
     if flags == 'S': return "S0"
     if 'R' in flags: return "REJ"
     if 'A' in flags or 'F' in flags: return "SF"
-    return "SF"
+
+    return "OTH"
 
 #calculate time window
 def update_history(dst_ip, dst_port, flag):
@@ -45,7 +55,7 @@ def update_history(dst_ip, dst_port, flag):
             if p_flag == "S0":
                 serror_count += 1       #SYN errors to this host
             
-        if p_dst == dst_ip and p_port == dst_port:
+        if p_port == dst_port:
             srv_count += 1              #packets to the same service
 
     serror_rate = (serror_count/count) if count > 0 else 0.0
@@ -55,28 +65,43 @@ def update_history(dst_ip, dst_port, flag):
 #extract features and translate raw scapy packet into JSON format
 def extract_features(packet):
     #only want packets with IP, dont need ARP etc.
-    if IP not in packet:
+    if not packet.haslayer(IP):
         return None
     
-    dst_ip = packet[IP].dst
-    port = 0
+    #default values
+    proto = "other"
+    service = "private"
     flag = "SF"
+    port = 0
+    dst_ip = packet[IP].dst
 
     #get protocol
-    port = 0
-    if TCP in packet:
+    if packet.haslayer(TCP):
         proto = "tcp"
-        port = packet[TCP].dport
+        sport =packet[TCP].sport
+        dport = packet[TCP].dport
+
+        if dport in port_to_feat: 
+            port = dport
+        else:
+            port = sport
+
         flag = get_tcp_flag(packet[TCP])
-    elif UDP in packet:
+        service = port_to_feat.get(port, "private")
+
+    elif packet.haslayer(UDP):
         proto = "udp"
         port = packet[UDP].dport
-    elif ICMP in packet: proto = "icmp"
-    else: proto = "other"
+        service = port_to_feat.get(port, "private")
+
+    elif packet.haslayer(ICMP): 
+        proto = "icmp"
+        if packet[ICMP].type == 8: service="eco_i"
+        elif packet[ICMP].type == 0: service="ecr_i"
+        else: service = "icmp"
 
     #get byte count of packet response body
     packet_size = len(packet[IP].payload) 
-    service = port_to_feat.get(port, "private")
     count, srv_count, serror_rate = update_history(dst_ip, port, flag)
 
     return {
@@ -87,12 +112,14 @@ def extract_features(packet):
         "src_bytes" : packet_size,
         "count" : count,
         "srv_count" : srv_count,
-        "serror_rate" : serror_rate
+        "serror_rate" : serror_rate,
+        "_target_port" : port
     }
 
 def handle_packet(packet):
     formatted_pkt = extract_features(packet)
     if not formatted_pkt: return    #if not an IP packet, then ignore
+    target_port = formatted_pkt.pop("_target_port", 0)
     payload = {"data": formatted_pkt}
 
     try:
@@ -100,16 +127,17 @@ def handle_packet(packet):
         if response.status_code == 200:
             attk_prob = response.json()
             if attk_prob > 0.8:
-                print(f"Malicious Traffic Detected | {formatted_pkt['protocol_type'].upper()} to Port: {formatted_pkt['service']} | Confidence: {attk_prob * 100:.2f}%") 
+                port_str = f"Port: {target_port}" if formatted_pkt['protocol_type'] != 'icmp' else "ICMP"
+                print(f"Malicious Traffic Detected | {port_str} | Service: ({formatted_pkt['service'].upper()}) | {formatted_pkt['protocol_type'].upper()} | Confidence: {attk_prob * 100:.2f}%") 
             else:
+                #comment the "pass" and uncomment the print statement if you want to see normal traffic too
                 pass
-                #you can uncomment this print statement if you want to see normal traffic
-                #print(f"normal traffic... | Confidence: {attk_prob}")
+                #print(f"Normal Traffic | Port: {target_port} ({formatted_pkt['service'].upper()}) | {formatted_pkt['protocol_type'].upper()} | Confidence: {attk_prob * 100:.2f}%") 
     except Exception:
         pass
 
 print("TITAN is online and ready")
 sniff(iface="lo",
-      filter="ip and not port 22", 
+      filter="ip and not port 8000", 
       prn=handle_packet, 
       store=0)
