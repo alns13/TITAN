@@ -4,3 +4,5 @@ joblib
 scikit-learn
 fastapi
 uvicorn
+scapy
+requests
