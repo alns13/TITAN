@@ -126,9 +126,17 @@ def handle_packet(packet):
         response = requests.post(API_addr, json=payload, timeout=0.1)
         if response.status_code == 200:
             attk_prob = response.json()
-            if attk_prob > 0.8:
-                port_str = f"Port: {target_port}" if formatted_pkt['protocol_type'] != 'icmp' else "ICMP"
-                print(f"Malicious Traffic Detected | {port_str} | Service: ({formatted_pkt['service'].upper()}) | {formatted_pkt['protocol_type'].upper()} | Confidence: {attk_prob * 100:.2f}%") 
+
+            if formatted_pkt["protocol_type"] == 'icmp':
+                port_str = f"Type: ICMP"
+                if attk_prob > 0.96:
+                    print(f"Malicious Traffic Detected | {port_str} | Service: ({formatted_pkt['service'].upper()}) | Protocol: {formatted_pkt['protocol_type'].upper()} | Confidence: {attk_prob * 100:.2f}%")
+                else:
+                    pass
+
+            elif attk_prob > 0.8: 
+                port_str = f"Port: {target_port}"
+                print(f"Malicious Traffic Detected | {port_str} | Service: ({formatted_pkt['service'].upper()}) | Protocol: {formatted_pkt['protocol_type'].upper()} | Confidence: {attk_prob * 100:.2f}%") 
             else:
                 #comment the "pass" and uncomment the print statement if you want to see normal traffic too
                 pass
@@ -138,6 +146,6 @@ def handle_packet(packet):
 
 print("TITAN is online and ready")
 sniff(iface="lo",
-      filter="ip and not port 8000", 
+      filter="ip and not port 22 and not port 8000", 
       prn=handle_packet, 
       store=0)
