@@ -8,7 +8,7 @@ import os
 #add src/ dir to sys.path list
 src_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src')
 sys.path.append(src_path)
-from testinfer import load_resources, predict_packet
+from v2_inference import load_resources, predict_packet
 
 #keep TITAN running until shutdown or toggle off
 @asynccontextmanager
