@@ -1,0 +1,2 @@
+"champion","accuracy","sensitivity","specificity","test_error_rate"
+"KNN_raw_k1",0.811701561391058,0.703966336787968,0.954072701060653,0.188298438608942
