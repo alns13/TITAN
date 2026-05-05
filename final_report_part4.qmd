@@ -20,8 +20,6 @@ format:
         \singlespacing
 ---
 
-*Per the course handout for group submissions: all four authors contributed to each section of this report.*
-
 ## 1. Introduction
 
 Network intrusion detection is a natural fit for the methods in this course: each NSL-KDD connection combines symbolic fields (protocol, service, TCP flag) with numeric traffic and host statistics, and the task is to separate benign `normal` sessions from attacks summarized under a single malicious label for binary classification. I compare **K-nearest neighbors (KNN)** and **soft-margin SVM with an RBF kernel** under a shared train–test protocol, and I use **PCA**, **K-means**, and **hierarchical clustering** to describe structure in the scaled feature space and to sanity-check clusters against the label without treating the label as part of the unsupervised fit.
@@ -40,7 +38,7 @@ The **advantages** of KNN are simplicity and flexible decision boundaries in fea
 
 **Unsupervised analysis** runs K-means and hierarchical clustering on **random subsets** of scaled training features (elbow and K-means on up to 2,500 rows; hierarchical clustering on fewer rows because the distance matrix is $O(n^2)$). Silhouette widths for K-means and for cuts of hierarchical trees use the same distance structure as the clustering step on those subsets.
 
-**Model formulas (course notation).** For KNN, Euclidean distance $d(x_0,x_i)=\sqrt{\sum_{j=1}^p (x_{0j}-x_{ij})^2}$ identifies the $K$ smallest neighbors; the predicted class is their majority vote $\hat{y}(x_0)=\mathrm{mode}\{y_{(1)},\ldots,y_{(K)}\}$. For soft-margin SVM with labels $\{\pm 1\}$, we minimize $\frac{1}{2}\|w\|^2 + C\sum_i \xi_i$ subject to $y_i(w^\top \phi(x_i)+b)\geq 1-\xi_i$, $\xi_i\geq 0$; the **RBF kernel** is $K(x_i,x_j)=\exp(-\gamma\lVert x_i-x_j\rVert^2)$, which induces nonlinear boundaries in the original predictors. **K-means** minimizes within-cluster sum of squares $\sum_{k=1}^K \sum_{x_i\in C_k} \lVert x_i-\mu_k\rVert^2$. **Agglomerative** hierarchical clustering merges clusters using pairwise distances between groups: **complete** linkage uses the maximum between-cluster distance, **average** linkage uses the mean pairwise distance between clusters, and **single** linkage uses the minimum between-cluster distance.
+**Model formulas (course notation).** For KNN, Euclidean distance identifies the $K$ smallest neighbors; the predicted class is their majority vote $\hat{y}(x_0)=\mathrm{mode}\{y_{(1)},\ldots,y_{(K)}\}$. For soft-margin SVM with labels $\{\pm 1\}$, we minimize $\frac{1}{2}\|w\|^2 + C\sum_i \xi_i$ subject to $y_i(w^\top \phi(x_i)+b)\geq 1-\xi_i$, $\xi_i\geq 0$; the **RBF kernel** is $K(x_i,x_j)=\exp(-\gamma\lVert x_i-x_j\rVert^2)$, which induces nonlinear boundaries in the original predictors. **K-means** minimizes within-cluster sum of squares $\sum_{k=1}^K \sum_{x_i\in C_k} \lVert x_i-\mu_k\rVert^2$. **Agglomerative** hierarchical clustering merges clusters using pairwise distances between groups: **complete** linkage uses the maximum between-cluster distance, **average** linkage uses the mean pairwise distance between clusters, and **single** linkage uses the minimum between-cluster distance.
 
 ## 3. Data analysis
 
@@ -104,7 +102,3 @@ Scaled numeric features with aligned dummy coding support strong holdout perform
 ## 5. References
 
 NSL-KDD (KDDTrain+, KDDTest+); course notes on KNN, SVM, PCA, K-means, and hierarchical clustering; R packages `class`, `e1071`, and `cluster`, with base `prcomp`, `kmeans`, and `hclust`.
-
-## 6. Appendix
-
-Full **R** source, data paths, and auxiliary plots are maintained in the course project repository online: [github.com/alns13/TITAN](https://github.com/alns13/TITAN). Use the **`4323Project`** branch for the MATH 4323 Part 4 pipeline (`TITAN-R/scripts/`, including `full_pipeline.R`). The handout’s example **eclust()** two-dimensional cluster visualization is implemented there with base **kmeans** plus separate diagnostic plots (**factoextra** was avoided to keep dependencies minimal).
