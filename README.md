@@ -30,3 +30,10 @@ Unlike traditional signature based firewalls, TITAN utilizes the **NSL-KDD datas
 * **High Accuracy Detection:** Achieving 95%+ accuracy in classifying DoS, Probe, R2L, and U2R attacks.
 * **Explainable AI (XAI):** Utilizing feature importance to explain *why* a specific packet was flagged.
 * **Scalable Pipeline:** A reproducible data engineering workflow from raw PCAP/CSV to model inference.
+
+## Project Roadmap
+* Replace XGBoost model with a Neural Network.
+* Replace Scapy sniffer with a higher performance tool.
+  * Possible alternatives include: libpcap, libtins, gopacket. 
+      
+   
